@@ -22,6 +22,7 @@ export class EditorView {
     onCopyBar,
     onRenameBar,
     onDeleteBar,
+    onMoveBar,
   }) {
     this.barColorSteps = barColorSteps;
     this.handlers = {
@@ -41,6 +42,7 @@ export class EditorView {
       onCopyBar,
       onRenameBar,
       onDeleteBar,
+      onMoveBar,
     };
     this.dragState = null;
     this.editorMountEl = null;
@@ -352,9 +354,12 @@ export class EditorView {
     const theme = workspace[themeKey];
     const style = String(theme.style || "").toLowerCase();
     const hasSelection = barName != null && theme.colors != null && theme.colors[barName] != null;
+    const namesInOrder = Object.keys(theme.colors || {});
+    const idx = barName != null ? namesInOrder.indexOf(barName) : -1;
 
     const buttons = createElement("div", { class: "row" });
     buttons.style.justifyContent = "flex-start";
+    buttons.style.flexWrap = "wrap";
     buttons.style.gap = "8px";
 
     const addBtn = createElement("button", { type: "button", text: "New" });
@@ -423,10 +428,30 @@ export class EditorView {
       this.handlers.onDeleteBar(themeKey, barName);
     });
 
+    const upBtn = createElement("button", { type: "button", text: "Move up" });
+    upBtn.disabled = hasSelection !== true || idx <= 0;
+    upBtn.addEventListener("click", () => {
+      if (hasSelection !== true) {
+        return;
+      }
+      this.handlers.onMoveBar(themeKey, barName, -1);
+    });
+
+    const downBtn = createElement("button", { type: "button", text: "Move down" });
+    downBtn.disabled = hasSelection !== true || idx < 0 || idx >= namesInOrder.length - 1;
+    downBtn.addEventListener("click", () => {
+      if (hasSelection !== true) {
+        return;
+      }
+      this.handlers.onMoveBar(themeKey, barName, 1);
+    });
+
     buttons.appendChild(addBtn);
     buttons.appendChild(copyBtn);
     buttons.appendChild(renameBtn);
     buttons.appendChild(delBtn);
+    buttons.appendChild(upBtn);
+    buttons.appendChild(downBtn);
 
     wrap.appendChild(
       createElement("div", {

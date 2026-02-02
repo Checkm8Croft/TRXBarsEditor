@@ -30,6 +30,7 @@ export class BarsApp {
       onCopyBar: (themeKey, fromName, toName) => this.copyBar(themeKey, fromName, toName),
       onRenameBar: (themeKey, fromName, toName) => this.renameBar(themeKey, fromName, toName),
       onDeleteBar: (themeKey, barName) => this.deleteBar(themeKey, barName),
+      onMoveBar: (themeKey, barName, delta) => this.moveBar(themeKey, barName, delta),
     });
 
     this.baseData = null;
@@ -494,7 +495,7 @@ export class BarsApp {
   deleteBar(themeKey, barName) {
     this.stateStore.deleteBar(themeKey, barName, this.baseData || {});
     const workspace = this.getWorkspace();
-    const names = Object.keys((workspace[themeKey] && workspace[themeKey].colors) || {}).sort((a, b) => a.localeCompare(b));
+    const names = Object.keys((workspace[themeKey] && workspace[themeKey].colors) || {});
     const next = names.length > 0 ? names[0] : null;
     if (next != null) {
       this.stateStore.selectBar(themeKey, next);
@@ -504,6 +505,13 @@ export class BarsApp {
       this.stateStore.saveToStorage();
       this.draft = null;
     }
+    this.renderAll();
+  }
+
+  moveBar(themeKey, barName, delta) {
+    this.stateStore.moveBar(themeKey, barName, delta, this.baseData || {});
+    this.stateStore.selectBar(themeKey, barName);
+    this.startDraft(themeKey, barName);
     this.renderAll();
   }
 

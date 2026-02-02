@@ -204,7 +204,7 @@ export class StateStore {
     if (theme == null) {
       return;
     }
-    const names = Object.keys(theme.colors || {}).sort((a, b) => a.localeCompare(b));
+    const names = Object.keys(theme.colors || {});
     const barName = names.length > 0 ? names[0] : "";
     this.state.selected = { sectionKey: themeKey, barName };
     this.state.barAdjust = { h: 0, s: 0, l: 0 };
@@ -285,6 +285,35 @@ export class StateStore {
       return;
     }
     delete editable.colors[barName];
+    this.saveToStorage();
+  }
+
+  moveBar(themeKey, barName, delta, baseData) {
+    const workspace = this.buildWorkspaceData(baseData);
+    const theme = workspace[themeKey];
+    if (theme == null || theme.colors == null || theme.colors[barName] == null) {
+      return;
+    }
+    const names = Object.keys(theme.colors);
+    const idx = names.indexOf(barName);
+    if (idx < 0) {
+      return;
+    }
+    const nextIdx = idx + delta;
+    if (nextIdx < 0 || nextIdx >= names.length) {
+      return;
+    }
+    const reordered = [...names];
+    const tmp = reordered[idx];
+    reordered[idx] = reordered[nextIdx];
+    reordered[nextIdx] = tmp;
+
+    const editable = this.ensureEditableTheme(themeKey, baseData);
+    const nextColors = {};
+    for (const name of reordered) {
+      nextColors[name] = structuredClone(theme.colors[name]);
+    }
+    editable.colors = nextColors;
     this.saveToStorage();
   }
 

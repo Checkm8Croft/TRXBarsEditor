@@ -47,7 +47,7 @@ export class BarsListView {
 
     for (const [themeKey, section] of entries) {
       const colors = section.colors || {};
-      const names = Object.keys(colors).sort((a, b) => a.localeCompare(b));
+      const names = Object.keys(colors);
 
       const panel = createElement("div", { class: "panel" });
       const header = createElement("div", { class: "panel-header" }, [
