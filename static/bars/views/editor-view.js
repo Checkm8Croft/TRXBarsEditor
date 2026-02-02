@@ -84,12 +84,16 @@ export class EditorView {
 
     if (section == null) {
       this.editorMetaEl.textContent = "Invalid selection";
-      this.editorMountEl.appendChild(createElement("div", { class: "muted", text: "Selected theme not found." }));
+      this.editorMountEl.appendChild(
+        createElement("div", { class: "muted", text: "Selected theme not found." }),
+      );
       return;
     }
     if (section.colors == null || section.colors[barName] == null) {
       this.editorMetaEl.textContent = `Theme: ${sectionKey}`;
-      this.editorMountEl.appendChild(createElement("div", { class: "muted", text: "Selected bar not found." }));
+      this.editorMountEl.appendChild(
+        createElement("div", { class: "muted", text: "Selected bar not found." }),
+      );
       return;
     }
 
@@ -97,7 +101,9 @@ export class EditorView {
     const value = section.colors[barName];
     const style = String(section.style || "").toLowerCase();
 
-    this.editorMountEl.appendChild(this.renderBarEditor(sectionKey, barName, section, value, style, state, draft));
+    this.editorMountEl.appendChild(
+      this.renderBarEditor(sectionKey, barName, section, value, style, state, draft),
+    );
   }
 
   renderThemeCrudBox(workspace, state) {
@@ -150,7 +156,9 @@ export class EditorView {
     );
 
     // Initial draw: defer until layout so canvas has a real size.
-    requestAnimationFrame(() => this.redrawBigPreview(sectionKey, barName, section, draftValue, state));
+    requestAnimationFrame(() =>
+      this.redrawBigPreview(sectionKey, barName, section, draftValue, state),
+    );
     return wrap;
   }
 
@@ -191,7 +199,9 @@ export class EditorView {
     this.bigPreviewCanvasEl.dataset.themeJson = JSON.stringify(theme);
     const rect = this.bigPreviewCanvasEl.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) {
-      requestAnimationFrame(() => this.redrawBigPreview(sectionKey, barName, section, barValue, state));
+      requestAnimationFrame(() =>
+        this.redrawBigPreview(sectionKey, barName, section, barValue, state),
+      );
       return;
     }
     drawBarPreview(this.bigPreviewCanvasEl, theme, state.percent, state.smooth, this.barColorSteps);
@@ -348,7 +358,9 @@ export class EditorView {
     const themeKey = state.selected != null ? state.selected.sectionKey : null;
     const barName = state.selected != null ? state.selected.barName : null;
     if (themeKey == null || workspace[themeKey] == null) {
-      wrap.appendChild(createElement("div", { class: "muted", text: "Select a theme/bar to manage bars." }));
+      wrap.appendChild(
+        createElement("div", { class: "muted", text: "Select a theme/bar to manage bars." }),
+      );
       return wrap;
     }
     const theme = workspace[themeKey];
@@ -465,11 +477,34 @@ export class EditorView {
 
   renderBarAdjustControls(sectionKey, barName, barValue, hsl) {
     const wrap = document.createElement("div");
-    wrap.appendChild(createElement("div", { class: "muted", text: "Applies to all 5 steps (and both PS1 ramps) at once." }));
+    wrap.appendChild(
+      createElement("div", {
+        class: "muted",
+        text: "Applies to all 5 steps (and both PS1 ramps) at once.",
+      }),
+    );
 
-    const h = createElement("input", { type: "range", min: "-180", max: "180", step: "1", value: String(hsl.h || 0) });
-    const s = createElement("input", { type: "range", min: "-100", max: "100", step: "1", value: String(hsl.s || 0) });
-    const l = createElement("input", { type: "range", min: "-100", max: "100", step: "1", value: String(hsl.l || 0) });
+    const h = createElement("input", {
+      type: "range",
+      min: "-180",
+      max: "180",
+      step: "1",
+      value: String(hsl.h || 0),
+    });
+    const s = createElement("input", {
+      type: "range",
+      min: "-100",
+      max: "100",
+      step: "1",
+      value: String(hsl.s || 0),
+    });
+    const l = createElement("input", {
+      type: "range",
+      min: "-100",
+      max: "100",
+      step: "1",
+      value: String(hsl.l || 0),
+    });
     const ho = createElement("output", { text: String(hsl.h || 0) });
     const so = createElement("output", { text: String(hsl.s || 0) });
     const lo = createElement("output", { text: String(hsl.l || 0) });
@@ -570,8 +605,14 @@ export class EditorView {
 
     const style = String(section.style || "").toLowerCase();
     if (style === "ps1") {
-      const left = Array.isArray(current) && Array.isArray(current[0]) ? [...current[0]] : Array(this.barColorSteps).fill("#000000");
-      const right = Array.isArray(current) && Array.isArray(current[1]) ? [...current[1]] : Array(this.barColorSteps).fill("#000000");
+      const left =
+        Array.isArray(current) && Array.isArray(current[0])
+          ? [...current[0]]
+          : Array(this.barColorSteps).fill("#000000");
+      const right =
+        Array.isArray(current) && Array.isArray(current[1])
+          ? [...current[1]]
+          : Array(this.barColorSteps).fill("#000000");
       if (ps1RampIndex === 1) {
         right[colorIndex] = colorHex;
       } else {
@@ -615,7 +656,11 @@ export class EditorView {
     const preview = createElement("div", { class: "modal-color-preview" });
     preview.style.background = initialHex;
 
-    const hexInput = createElement("input", { type: "text", value: initialHex, class: "modal-hex" });
+    const hexInput = createElement("input", {
+      type: "text",
+      value: initialHex,
+      class: "modal-hex",
+    });
     const hexRow = createElement("div", { class: "modal-row" }, [
       createElement("label", { text: "HEX" }),
       hexInput,
@@ -750,12 +795,22 @@ export class EditorView {
   }
 
   makeSlider(label, min, max, step, value) {
-    const input = createElement("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(value) });
+    const input = createElement("input", {
+      type: "range",
+      min: String(min),
+      max: String(max),
+      step: String(step),
+      value: String(value),
+    });
     const out = createElement("output", { text: String(value) });
     input.addEventListener("input", () => {
       out.textContent = String(input.value);
     });
-    const el = createElement("div", { class: "modal-slider" }, [createElement("label", { text: label }), input, out]);
+    const el = createElement("div", { class: "modal-slider" }, [
+      createElement("label", { text: label }),
+      input,
+      out,
+    ]);
     return {
       el,
       input,
@@ -781,9 +836,15 @@ export class EditorView {
   }
 
   rgbToHex(r, g, b) {
-    const rr = Math.min(255, Math.max(0, r | 0)).toString(16).padStart(2, "0");
-    const gg = Math.min(255, Math.max(0, g | 0)).toString(16).padStart(2, "0");
-    const bb = Math.min(255, Math.max(0, b | 0)).toString(16).padStart(2, "0");
+    const rr = Math.min(255, Math.max(0, r | 0))
+      .toString(16)
+      .padStart(2, "0");
+    const gg = Math.min(255, Math.max(0, g | 0))
+      .toString(16)
+      .padStart(2, "0");
+    const bb = Math.min(255, Math.max(0, b | 0))
+      .toString(16)
+      .padStart(2, "0");
     return `#${rr}${gg}${bb}`;
   }
 

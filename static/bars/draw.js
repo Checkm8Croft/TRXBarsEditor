@@ -80,7 +80,14 @@ export function drawBarPreview(canvas, theme, percent, smooth, barColorSteps) {
             ? rect.y + rect.h
             : rect.y + Math.floor(((i + 1) * rect.h) / (barColorSteps - 1));
         const segH = Math.max(1, y2 - y1);
-        drawBilinearGradientRect(ctx, { x: rect.x, y: y1, w: rect.w, h: segH }, ctl, ctrm, cbrm, cbl);
+        drawBilinearGradientRect(
+          ctx,
+          { x: rect.x, y: y1, w: rect.w, h: segH },
+          ctl,
+          ctrm,
+          cbrm,
+          cbl,
+        );
       }
     } else {
       for (let i = 0; i < barColorSteps; i++) {
@@ -89,7 +96,10 @@ export function drawBarPreview(canvas, theme, percent, smooth, barColorSteps) {
         const crm = mixColors(cl, cr, percent);
 
         const y1 = rect.y + Math.floor((i * rect.h) / barColorSteps);
-        const y2 = i === barColorSteps - 1 ? rect.y + rect.h : rect.y + Math.floor(((i + 1) * rect.h) / barColorSteps);
+        const y2 =
+          i === barColorSteps - 1
+            ? rect.y + rect.h
+            : rect.y + Math.floor(((i + 1) * rect.h) / barColorSteps);
         const segH = Math.max(1, y2 - y1);
         drawBilinearGradientRect(ctx, { x: rect.x, y: y1, w: rect.w, h: segH }, cl, crm, crm, cl);
       }
@@ -105,7 +115,9 @@ export function drawBarPreview(canvas, theme, percent, smooth, barColorSteps) {
     for (let i = 0; i < barColorSteps - 1; i++) {
       const y1 = rect.y + Math.floor((i * rect.h) / (barColorSteps - 1));
       const y2 =
-        i === barColorSteps - 2 ? rect.y + rect.h : rect.y + Math.floor(((i + 1) * rect.h) / (barColorSteps - 1));
+        i === barColorSteps - 2
+          ? rect.y + rect.h
+          : rect.y + Math.floor(((i + 1) * rect.h) / (barColorSteps - 1));
       const segH = Math.max(1, y2 - y1);
       drawVerticalGradientRect(ctx, { x: rect.x, y: y1, w: rect.w, h: segH }, ramp[i], ramp[i + 1]);
     }
@@ -113,7 +125,10 @@ export function drawBarPreview(canvas, theme, percent, smooth, barColorSteps) {
   }
   for (let i = 0; i < barColorSteps; i++) {
     const y1 = rect.y + Math.floor((i * rect.h) / barColorSteps);
-    const y2 = i === barColorSteps - 1 ? rect.y + rect.h : rect.y + Math.floor(((i + 1) * rect.h) / barColorSteps);
+    const y2 =
+      i === barColorSteps - 1
+        ? rect.y + rect.h
+        : rect.y + Math.floor(((i + 1) * rect.h) / barColorSteps);
     const segH = Math.max(1, y2 - y1);
     drawSolidRect(ctx, { x: rect.x, y: y1, w: rect.w, h: segH }, ramp[i]);
   }

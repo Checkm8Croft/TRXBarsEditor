@@ -119,7 +119,11 @@ export class BarsListView {
     this.resetEditsButtonEl = createElement("button", { type: "button", text: "Reset edits" });
     this.resetEditsButtonEl.addEventListener("click", () => handlers.onResetEdits());
 
-    return createElement("div", { class: "controls" }, [fill, smoothLabel, this.resetEditsButtonEl]);
+    return createElement("div", { class: "controls" }, [
+      fill,
+      smoothLabel,
+      this.resetEditsButtonEl,
+    ]);
   }
 
   createBarCanvas(barName, sectionKey, theme, handlers) {
@@ -148,7 +152,7 @@ export class BarsListView {
       drawBarPreview(canvas, theme, state.percent, state.smooth, this.barColorSteps);
     }
 
-    for (const btn of document.querySelectorAll('button[data-section-key][data-bar-name]')) {
+    for (const btn of document.querySelectorAll("button[data-section-key][data-bar-name]")) {
       const selected =
         state.selected != null &&
         btn.dataset.sectionKey === state.selected.sectionKey &&

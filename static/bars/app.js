@@ -14,8 +14,10 @@ export class BarsApp {
     this.barsListView = new BarsListView({ barColorSteps });
     this.editorView = new EditorView({
       barColorSteps,
-      onPreviewBarValue: (sectionKey, barName, barValue) => this.setDraftValue(sectionKey, barName, barValue),
-      onSetDraftValue: (sectionKey, barName, barValue) => this.setDraftValue(sectionKey, barName, barValue),
+      onPreviewBarValue: (sectionKey, barName, barValue) =>
+        this.setDraftValue(sectionKey, barName, barValue),
+      onSetDraftValue: (sectionKey, barName, barValue) =>
+        this.setDraftValue(sectionKey, barName, barValue),
       onConfirmDraft: () => this.confirmDraft(),
       onCancelDraft: () => this.cancelDraft(),
       onResetDraft: () => this.resetDraft(),
@@ -113,7 +115,10 @@ export class BarsApp {
       this.stateStore.migrateLegacyEdits(this.baseData);
 
       if (this.stateStore.state.selected != null) {
-        this.startDraft(this.stateStore.state.selected.sectionKey, this.stateStore.state.selected.barName);
+        this.startDraft(
+          this.stateStore.state.selected.sectionKey,
+          this.stateStore.state.selected.barName,
+        );
       } else {
         this.draft = null;
       }
@@ -182,7 +187,10 @@ export class BarsApp {
       createElement("div", { class: "empty-state" }, [
         createElement("div", { class: "empty-state-inner" }, [
           createElement("h1", { class: "empty-state-title", text: "No file loaded" }),
-          createElement("div", { class: "empty-state-subtitle", text: "Click Upload… or drop ui.json5 to begin." }),
+          createElement("div", {
+            class: "empty-state-subtitle",
+            text: "Click Upload… or drop ui.json5 to begin.",
+          }),
         ]),
       ]),
     );
@@ -219,7 +227,10 @@ export class BarsApp {
     drop.addEventListener("drop", async (e) => {
       e.preventDefault();
       drop.classList.remove("dragover");
-      const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0] ? e.dataTransfer.files[0] : null;
+      const file =
+        e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]
+          ? e.dataTransfer.files[0]
+          : null;
       if (file == null) {
         return;
       }
@@ -280,7 +291,9 @@ export class BarsApp {
     if (this.uploadModalError != null) {
       slot.appendChild(
         createElement("div", { class: "error" }, [
-          createElement("p", { html: `Parse failed: <code>${escapeHtml(String(this.uploadModalError))}</code>` }),
+          createElement("p", {
+            html: `Parse failed: <code>${escapeHtml(String(this.uploadModalError))}</code>`,
+          }),
         ]),
       );
     }
@@ -304,7 +317,10 @@ export class BarsApp {
 
   renderAll() {
     if (this.draft == null && this.stateStore.state.selected != null) {
-      this.startDraft(this.stateStore.state.selected.sectionKey, this.stateStore.state.selected.barName);
+      this.startDraft(
+        this.stateStore.state.selected.sectionKey,
+        this.stateStore.state.selected.barName,
+      );
     }
     const root = document.getElementById("root");
     const workspace = this.buildWorkspaceWithDraft();
@@ -392,7 +408,10 @@ export class BarsApp {
     }
     this.stateStore.resetEdits();
     if (this.stateStore.state.selected != null) {
-      this.startDraft(this.stateStore.state.selected.sectionKey, this.stateStore.state.selected.barName);
+      this.startDraft(
+        this.stateStore.state.selected.sectionKey,
+        this.stateStore.state.selected.barName,
+      );
     } else {
       this.draft = null;
     }
@@ -458,7 +477,10 @@ export class BarsApp {
 
   deleteTheme(themeKey) {
     this.stateStore.deleteTheme(themeKey);
-    if (this.stateStore.state.selected != null && this.stateStore.state.selected.sectionKey === themeKey) {
+    if (
+      this.stateStore.state.selected != null &&
+      this.stateStore.state.selected.sectionKey === themeKey
+    ) {
       this.stateStore.state.selected = null;
       this.stateStore.saveToStorage();
       this.draft = null;
@@ -479,7 +501,12 @@ export class BarsApp {
     if (theme == null || theme.colors == null || theme.colors[fromName] == null) {
       return;
     }
-    this.stateStore.setBarValue(themeKey, toName, structuredClone(theme.colors[fromName]), this.baseData || {});
+    this.stateStore.setBarValue(
+      themeKey,
+      toName,
+      structuredClone(theme.colors[fromName]),
+      this.baseData || {},
+    );
     this.stateStore.selectBar(themeKey, toName);
     this.startDraft(themeKey, toName);
     this.renderAll();
@@ -534,7 +561,11 @@ export class BarsApp {
   }
 
   setDraftValue(sectionKey, barName, value) {
-    if (this.draft == null || this.draft.sectionKey !== sectionKey || this.draft.barName !== barName) {
+    if (
+      this.draft == null ||
+      this.draft.sectionKey !== sectionKey ||
+      this.draft.barName !== barName
+    ) {
       this.startDraft(sectionKey, barName);
     }
     if (this.draft == null) {
@@ -562,7 +593,12 @@ export class BarsApp {
       this.draft.value,
       this.stateStore.state,
     );
-    this.editorView.updateSwatchesIfSelected(this.draft.sectionKey, this.draft.barName, this.draft.value, this.stateStore.state);
+    this.editorView.updateSwatchesIfSelected(
+      this.draft.sectionKey,
+      this.draft.barName,
+      this.draft.value,
+      this.stateStore.state,
+    );
     this.editorView.redrawBigPreviewIfReady(workspace, this.stateStore.state, this.draft);
   }
 
@@ -573,7 +609,12 @@ export class BarsApp {
     try {
       const savedSectionKey = this.draft.sectionKey;
       const savedBarName = this.draft.barName;
-      this.stateStore.setEditedBarValue(savedSectionKey, savedBarName, this.draft.value, this.baseData || {});
+      this.stateStore.setEditedBarValue(
+        savedSectionKey,
+        savedBarName,
+        this.draft.value,
+        this.baseData || {},
+      );
       this.draft = null;
       this.flashSavedStatus();
       this.renderAll();
@@ -625,7 +666,8 @@ export class BarsApp {
       nextBarName != null &&
       (nextSectionKey !== this.draft.sectionKey || nextBarName !== this.draft.barName);
     const leavingSelection = nextSectionKey == null && nextBarName == null;
-    const switchingThemeOnly = nextSectionKey != null && nextBarName == null && nextSectionKey !== this.draft.sectionKey;
+    const switchingThemeOnly =
+      nextSectionKey != null && nextBarName == null && nextSectionKey !== this.draft.sectionKey;
     if (switchingBar || leavingSelection || switchingThemeOnly) {
       const ok = window.confirm("You have uncommitted changes. Save them?");
       if (ok === true) {

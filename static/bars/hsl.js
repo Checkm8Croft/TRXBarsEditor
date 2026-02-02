@@ -30,9 +30,15 @@ export function parseHexColor(hex) {
 }
 
 export function rgbaToHex(rgba) {
-  const r = Math.min(255, Math.max(0, rgba.r | 0)).toString(16).padStart(2, "0");
-  const g = Math.min(255, Math.max(0, rgba.g | 0)).toString(16).padStart(2, "0");
-  const b = Math.min(255, Math.max(0, rgba.b | 0)).toString(16).padStart(2, "0");
+  const r = Math.min(255, Math.max(0, rgba.r | 0))
+    .toString(16)
+    .padStart(2, "0");
+  const g = Math.min(255, Math.max(0, rgba.g | 0))
+    .toString(16)
+    .padStart(2, "0");
+  const b = Math.min(255, Math.max(0, rgba.b | 0))
+    .toString(16)
+    .padStart(2, "0");
   return `#${r}${g}${b}`;
 }
 
