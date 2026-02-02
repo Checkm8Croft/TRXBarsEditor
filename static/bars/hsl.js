@@ -42,6 +42,10 @@ export function rgbaToHex(rgba) {
   return `#${r}${g}${b}`;
 }
 
+export function rgbToHex(r, g, b) {
+  return rgbaToHex({ r, g, b, a: 255 });
+}
+
 export function rgbToHsl(r, g, b) {
   const rr = r / 255;
   const gg = g / 255;
@@ -68,6 +72,52 @@ export function rgbToHsl(r, g, b) {
   const l = (max + min) / 2;
   const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
   return { h, s: s * 100, l: l * 100 };
+}
+
+export function hslToRgb(h, s, l) {
+  const hh = ((h % 360) + 360) % 360;
+  const ss = Math.min(100, Math.max(0, s)) / 100;
+  const ll = Math.min(100, Math.max(0, l)) / 100;
+
+  const c = (1 - Math.abs(2 * ll - 1)) * ss;
+  const x = c * (1 - Math.abs(((hh / 60) % 2) - 1));
+  const m = ll - c / 2;
+
+  let rr = 0;
+  let gg = 0;
+  let bb = 0;
+  if (hh < 60) {
+    rr = c;
+    gg = x;
+    bb = 0;
+  } else if (hh < 120) {
+    rr = x;
+    gg = c;
+    bb = 0;
+  } else if (hh < 180) {
+    rr = 0;
+    gg = c;
+    bb = x;
+  } else if (hh < 240) {
+    rr = 0;
+    gg = x;
+    bb = c;
+  } else if (hh < 300) {
+    rr = x;
+    gg = 0;
+    bb = c;
+  } else {
+    rr = c;
+    gg = 0;
+    bb = x;
+  }
+
+  return {
+    r: Math.round((rr + m) * 255),
+    g: Math.round((gg + m) * 255),
+    b: Math.round((bb + m) * 255),
+    a: 255,
+  };
 }
 
 export function hslToHex(h, s, l) {
