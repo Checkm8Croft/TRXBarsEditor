@@ -255,8 +255,15 @@ export class StateStore {
       return;
     }
     const editable = this.ensureEditableTheme(themeKey, baseData);
-    editable.colors[toName] = structuredClone(theme.colors[fromName]);
-    delete editable.colors[fromName];
+    const renamedColors = {};
+    for (const [name, value] of Object.entries(theme.colors)) {
+      if (name === fromName) {
+        renamedColors[toName] = structuredClone(value);
+        continue;
+      }
+      renamedColors[name] = structuredClone(value);
+    }
+    editable.colors = renamedColors;
     this.saveToStorage();
   }
 
