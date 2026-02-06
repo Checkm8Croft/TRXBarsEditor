@@ -3,9 +3,7 @@ import { ThemeBars } from "./ThemeBars.jsx";
 
 export function ThemeList({ barColorSteps, workspace, selected, percent, smooth, onSelectBar }) {
   const themes = useMemo(() => {
-    return Object.entries(workspace || {})
-      .filter(([, v]) => v != null)
-      .sort(([a], [b]) => a.localeCompare(b));
+    return Object.entries(workspace || {}).filter(([, v]) => v != null);
   }, [workspace]);
 
   return (

@@ -10,7 +10,7 @@ export function ThemeManager({
   onRenameTheme,
   onDeleteTheme,
 }) {
-  const keys = Object.keys(workspace || {}).sort((a, b) => a.localeCompare(b));
+  const keys = Object.keys(workspace || {});
 
   return (
     <div className="box">
