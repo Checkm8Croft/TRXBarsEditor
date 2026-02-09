@@ -180,6 +180,11 @@ export function App() {
     persistStore();
   };
 
+  const moveTheme = (themeKey, delta) => {
+    store.moveTheme(themeKey, delta, baseData || {});
+    persistStore();
+  };
+
   const addBar = (themeKey, barName) => {
     const theme = workspace[themeKey];
     const value = defaultBarValue({ sectionStyle: theme?.style, barColorSteps: BAR_COLOR_STEPS });
@@ -329,6 +334,7 @@ export function App() {
                     onSetThemeLabel={setThemeLabel}
                     onCopyTheme={copyTheme}
                     onRenameTheme={renameTheme}
+                    onMoveTheme={moveTheme}
                     onDeleteTheme={deleteTheme}
                   />
 

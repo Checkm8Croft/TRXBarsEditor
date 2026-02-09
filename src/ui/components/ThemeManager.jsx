@@ -10,9 +10,11 @@ export function ThemeManager({
   onSetThemeLabel,
   onCopyTheme,
   onRenameTheme,
+  onMoveTheme,
   onDeleteTheme,
 }) {
   const keys = Object.keys(workspace || {});
+  const idx = selectedThemeKey ? keys.indexOf(selectedThemeKey) : -1;
 
   return (
     <div className="box">
@@ -123,6 +125,22 @@ export function ThemeManager({
           }}
         >
           Delete
+        </button>
+
+        <button
+          type="button"
+          disabled={!selectedThemeKey || idx <= 0}
+          onClick={() => onMoveTheme(selectedThemeKey, -1)}
+        >
+          Move earlier
+        </button>
+
+        <button
+          type="button"
+          disabled={!selectedThemeKey || idx < 0 || idx >= keys.length - 1}
+          onClick={() => onMoveTheme(selectedThemeKey, 1)}
+        >
+          Move later
         </button>
 
         <button

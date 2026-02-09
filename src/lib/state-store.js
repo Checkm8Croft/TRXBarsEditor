@@ -15,6 +15,7 @@ export class StateStore {
       edits: {},
       workspaceThemes: {},
       deletedThemes: {},
+      themeOrder: [],
       barAdjust: { h: 0, s: 0, l: 0 },
     };
   }
@@ -56,6 +57,9 @@ export class StateStore {
       if (parsed.deletedThemes != null && typeof parsed.deletedThemes === "object") {
         this.state.deletedThemes = parsed.deletedThemes;
       }
+      if (Array.isArray(parsed.themeOrder)) {
+        this.state.themeOrder = parsed.themeOrder.filter((v) => typeof v === "string");
+      }
     } catch {
       // ignore
     }
@@ -70,6 +74,7 @@ export class StateStore {
       barAdjust: this.state.barAdjust,
       workspaceThemes: this.state.workspaceThemes,
       deletedThemes: this.state.deletedThemes,
+      themeOrder: this.state.themeOrder,
     };
     safeSetLocalStorageItem(this.storageKey, JSON.stringify(snapshot));
   }
@@ -84,6 +89,9 @@ export class StateStore {
     if (Object.keys(this.state.deletedThemes || {}).length > 0) {
       return true;
     }
+    if (Array.isArray(this.state.themeOrder) && this.state.themeOrder.length > 0) {
+      return true;
+    }
     return false;
   }
 
@@ -91,6 +99,7 @@ export class StateStore {
     this.state.edits = {};
     this.state.workspaceThemes = {};
     this.state.deletedThemes = {};
+    this.state.themeOrder = [];
     this.saveToStorage();
   }
 
@@ -162,7 +171,22 @@ export class StateStore {
       }
     }
 
-    return out;
+    const order = Array.isArray(this.state.themeOrder) ? this.state.themeOrder : [];
+    if (order.length === 0) {
+      return out;
+    }
+    const ordered = {};
+    for (const key of order) {
+      if (out[key] != null) {
+        ordered[key] = out[key];
+      }
+    }
+    for (const [key, value] of Object.entries(out)) {
+      if (ordered[key] == null) {
+        ordered[key] = value;
+      }
+    }
+    return ordered;
   }
 
   ensureEditableTheme(themeKey, baseData) {
@@ -215,6 +239,9 @@ export class StateStore {
       delete this.state.deletedThemes[themeKey];
     }
     this.state.workspaceThemes[themeKey] = createDefaultTheme(kind, themeKey);
+    if (Array.isArray(this.state.themeOrder) && !this.state.themeOrder.includes(themeKey)) {
+      this.state.themeOrder = [...this.state.themeOrder, themeKey];
+    }
     this.saveToStorage();
   }
 
@@ -234,6 +261,9 @@ export class StateStore {
       delete this.state.deletedThemes[toKey];
     }
     this.state.workspaceThemes[toKey] = structuredClone(from);
+    if (Array.isArray(this.state.themeOrder) && !this.state.themeOrder.includes(toKey)) {
+      this.state.themeOrder = [...this.state.themeOrder, toKey];
+    }
     this.saveToStorage();
   }
 
@@ -245,6 +275,19 @@ export class StateStore {
     if (this.state.workspaceThemes && this.state.workspaceThemes[themeKey] != null) {
       delete this.state.workspaceThemes[themeKey];
     }
+    if (Array.isArray(this.state.themeOrder) && this.state.themeOrder.length > 0) {
+      this.state.themeOrder = this.state.themeOrder.filter((key) => key !== themeKey);
+    }
+    this.saveToStorage();
+  }
+
+  moveTheme(themeKey, delta, baseData) {
+    const workspace = this.buildWorkspaceData(baseData);
+    if (workspace[themeKey] == null) {
+      return;
+    }
+    const reordered = swapKeyOrderInObject(workspace, themeKey, delta);
+    this.state.themeOrder = Object.keys(reordered);
     this.saveToStorage();
   }
 
