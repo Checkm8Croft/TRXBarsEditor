@@ -84,7 +84,7 @@ export function ThemeManager({
             onCopyTheme(selectedThemeKey, key);
           }}
         >
-          Copy
+          Clone
         </button>
 
         <button

@@ -41,7 +41,7 @@ export function BarManager({
             onAddBar(themeKey, name);
           }}
         >
-          New
+          Add
         </button>
 
         <button
@@ -63,7 +63,7 @@ export function BarManager({
             onCopyBar(themeKey, from, to);
           }}
         >
-          Dupe
+          Clone
         </button>
 
         <button
